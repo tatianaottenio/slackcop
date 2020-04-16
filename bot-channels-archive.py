@@ -1,4 +1,5 @@
 import os
+import sys
 import logging
 from slack import WebClient
 from slack.errors import SlackApiError
@@ -20,12 +21,12 @@ def archive_channels(channels):
                 channel=id
             )
 
-            print("join ok"])
+            print("join ok")
             response_arch = slack_web_client.conversations_archive(
                 channel=id
             )
 
-            print("archive ok"])
+            print("archive ok")
         except SlackApiError as e:
             # You will get a SlackApiError if "ok" is False
             assert e.response["ok"] is False
@@ -39,6 +40,18 @@ if __name__ == "__main__":
     #logger.setLevel(logging.DEBUG)
     #logger.addHandler(logging.StreamHandler())
     ssl_context = ssl_lib.create_default_context(cafile=certifi.where())
-    channels = ChannelsList.list_channels_to_be_archived(60)
-    print(len(channels))
-    channels_archive(channels)
+
+    channelsIds = []
+    #Channels id coming from command line
+    if len(sys.argv) > 1:
+        print("Using IDs sent via command line")
+        channelsIds = sys.argv[1:]
+    else:
+        print("Using IDs from Slack API")
+        channels_list = ChannelsList()
+        channelsIds = channels_list.list_channels_to_be_archived(60)
+
+    print(len(channelsIds))
+    print(str(channelsIds))
+
+    archive_channels(channelsIds)
