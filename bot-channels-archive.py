@@ -13,8 +13,8 @@ from channels_list import ChannelsList
 slack_web_client = WebClient(token=os.environ['SLACK_BOT_TOKEN'],ssl=True)
 
 #@app.route('/slack/channels/clean')
-def archive_channels(channels):
-    for id in channels:
+def archive_channels(channelsIds):
+    for id in channelsIds:
         try:
             print("========",id)
             response_join = slack_web_client.conversations_join(
