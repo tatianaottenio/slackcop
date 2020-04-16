@@ -1,18 +1,22 @@
 import os
 import logging
 from slack import WebClient
+from slack.errors import SlackApiError
 import time
 import ssl as ssl_lib
 import certifi
 
 class ChannelsList:
-    #@app.route('/slack/channels/clean')
-    @staticmethod
-    def listChannels():
-        # Initialize a Web API client
-        slack_web_client = WebClient(token=os.environ['SLACK_USER_TOKEN'],ssl=True)
+    slack_web_client = None
 
-        response = slack_web_client.conversations_list(
+    def __init__(self):
+        # Initialize a Web API client
+        self.slack_web_client = WebClient(token=os.environ['SLACK_USER_TOKEN'],ssl=True)
+
+    #@app.route('/slack/channels/clean')
+    def list_channels(self):
+
+        response = self.slack_web_client.conversations_list(
             types="public_channel",
             exclude_archived="true",
             limit=200
@@ -21,7 +25,7 @@ class ChannelsList:
         response_metadata = response["response_metadata"]
 
         while "next_cursor" in response_metadata and response_metadata["next_cursor"]:
-            response = slack_web_client.conversations_list(
+            response = self.slack_web_client.conversations_list(
                 types="public_channel",
                 exclude_archived="true",
                 limit=200,
@@ -33,18 +37,17 @@ class ChannelsList:
 
         return channels
 
-    @staticmethod
-    def list_channels_to_be_archived(inactive_days):
+    def list_channels_to_be_archived(self, inactive_days):
         oldest = time.time() - inactive_days*24*60*60;
-
+        channels = self.list_channels()
         idsToArchive = []
         for c in channels:
-            response_hst = slack_web_client.conversations_history(
+            response_hst = self.slack_web_client.conversations_history(
                 channel=c["id"],
                 oldest=str(oldest)
             )
-
             messages = response_hst["messages"]
+            
             valid_subtypes = ["bot_message", "message_replied", "thread_broadcast"]
 
             archive=True
@@ -65,6 +68,5 @@ if __name__ == "__main__":
     #logger.addHandler(logging.StreamHandler())
     ssl_context = ssl_lib.create_default_context(cafile=certifi.where())
 
-    channels = ChannelsList.listChannels()
-    print(len(channels), '\n\n\n\n')
-    list_channels_to_be_archived(channels)
+    channelList = ChannelsList()
+    channelList.list_channels_to_be_archived(60)
