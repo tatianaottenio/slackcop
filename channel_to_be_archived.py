@@ -7,13 +7,13 @@ import certifi
 from channels_list import ChannelsList
 
 # Initialize a Web API client
-slack_web_client_tati = WebClient(token='',ssl=True)
+slack_web_client = WebClient(token=os.environ['SLACK_USER_TOKEN'],ssl=True)
 
 def channels_to_be_archived(channels):
     three_months_ago = time.time() - 2*30*24*60*60;
 
     for c in channels:
-        response_hst = slack_web_client_tati.conversations_history(
+        response_hst = slack_web_client.conversations_history(
             channel=c["id"],
             oldest=str(three_months_ago)
         )

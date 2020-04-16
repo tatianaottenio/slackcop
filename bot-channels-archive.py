@@ -7,17 +7,17 @@ import certifi
 from onboarding_tutorial import OnboardingTutorial
 
 # Initialize a Web API client
-slack_web_client_bot = WebClient(token='',ssl=True)
+slack_web_client = WebClient(token=os.environ['SLACK_BOT_TOKEN'],ssl=True)
 
 def channels_archive(channels):
     for id in channels:
         print("========",id)
-        response_join = slack_web_client_bot.conversations_join(
+        response_join = slack_web_client.conversations_join(
             channel=id
         )
         if response_join["ok"]:
             print("join", response_join["ok"])
-            response_arch = slack_web_client_bot.conversations_archive(
+            response_arch = slack_web_client.conversations_archive(
                 channel=id
             )
             if response_arch["ok"]:

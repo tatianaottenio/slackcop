@@ -10,9 +10,9 @@ class ChannelsList:
     @staticmethod
     def listChannels():
         # Initialize a Web API client
-        slack_web_client_tati = WebClient(token='',ssl=True)
-        
-        response = slack_web_client_tati.conversations_list(
+        slack_web_client = WebClient(token=os.environ['SLACK_USER_TOKEN'],ssl=True)
+
+        response = slack_web_client.conversations_list(
             types="public_channel",
             exclude_archived="true",
             limit=200
@@ -21,7 +21,7 @@ class ChannelsList:
         response_metadata = response["response_metadata"]
 
         while "next_cursor" in response_metadata and response_metadata["next_cursor"]:
-            response = slack_web_client_tati.conversations_list(
+            response = slack_web_client.conversations_list(
                 types="public_channel",
                 exclude_archived="true",
                 limit=200,
