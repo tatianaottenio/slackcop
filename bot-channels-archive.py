@@ -4,12 +4,14 @@ from slack import WebClient
 import time
 import ssl as ssl_lib
 import certifi
-from onboarding_tutorial import OnboardingTutorial
+from channels_list import ChannelsList
+
 
 # Initialize a Web API client
 slack_web_client = WebClient(token=os.environ['SLACK_BOT_TOKEN'],ssl=True)
 
-def channels_archive(channels):
+#@app.route('/slack/channels/clean')
+def archive_channels(channels):
     for id in channels:
         print("========",id)
         response_join = slack_web_client.conversations_join(
@@ -33,9 +35,6 @@ if __name__ == "__main__":
     #logger.setLevel(logging.DEBUG)
     #logger.addHandler(logging.StreamHandler())
     ssl_context = ssl_lib.create_default_context(cafile=certifi.where())
-    #channels = channels_list()
-    #print(len(channels), '\n\n\n\n')
-    #channels_archive(channels)
-    channels = ["CMEETRCFK"]
-    #channels = ["C011WR1QZQS"]
+    channels = ChannelsList.list_channels_to_be_archived(60)
+    print(len(channels), '\n\n\n\n')
     channels_archive(channels)
