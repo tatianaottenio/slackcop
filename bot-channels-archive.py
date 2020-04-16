@@ -7,7 +7,7 @@ import certifi
 from onboarding_tutorial import OnboardingTutorial
 
 # Initialize a Web API client
-slack_web_client_bot = WebClient(token='xoxb-101787336466-1055493452038-xgxAudSgWsbpNZqUSHaM3TIp',ssl=True)
+slack_web_client_bot = WebClient(token='',ssl=True)
 
 def channels_archive(channels):
     for id in channels:
