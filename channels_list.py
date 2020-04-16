@@ -10,7 +10,7 @@ class ChannelsList:
     @staticmethod
     def listChannels():
         # Initialize a Web API client
-        slack_web_client_tati = WebClient(token='xoxp-101787336466-724089578480-1063515502325-7d9f1b7ae416f45dc4112799eb0a8454',ssl=True)
+        slack_web_client_tati = WebClient(token='',ssl=True)
         
         response = slack_web_client_tati.conversations_list(
             types="public_channel",
