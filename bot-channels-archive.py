@@ -8,6 +8,7 @@ import ssl as ssl_lib
 import certifi
 from channels_list import ChannelsList
 
+INACTIVE_DAYS=60
 LOGGER = logging.getLogger()
 
 # Initialize a Web API client
@@ -49,7 +50,7 @@ if __name__ == "__main__":
     else:
         LOGGER.info("Using IDs from Slack API")
         channels_list = ChannelsList()
-        channelsIds = channels_list.list_channels_to_be_archived(60)
+        channelsIds = channels_list.list_channels_to_be_archived(INACTIVE_DAYS)
 
     LOGGER.info("Verifying %d channels", len(channelsIds))
     LOGGER.info("Ids: %s", str(channelsIds))
