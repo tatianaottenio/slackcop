@@ -8,6 +8,7 @@ import ssl as ssl_lib
 import certifi
 from channels_list import ChannelsList
 
+LOGGER = logging.getLogger()
 
 # Initialize a Web API client
 slack_web_client = WebClient(token=os.environ['SLACK_BOT_TOKEN'],ssl=True)
@@ -16,42 +17,41 @@ slack_web_client = WebClient(token=os.environ['SLACK_BOT_TOKEN'],ssl=True)
 def archive_channels(channelsIds):
     for id in channelsIds:
         try:
-            print("========",id)
+            LOGGER.info("======== %d",id)
             response_join = slack_web_client.conversations_join(
                 channel=id
             )
 
-            print("join ok")
+            LOGGER.info("join ok")
             response_arch = slack_web_client.conversations_archive(
                 channel=id
             )
 
-            print("archive ok")
+            LOGGER.info("archive ok")
         except SlackApiError as e:
             # You will get a SlackApiError if "ok" is False
             assert e.response["ok"] is False
             assert e.response["error"]  # str like 'invalid_auth', 'channel_not_found'
-            print(f"Got an error: {e.response['error']}")
-        finally:
-            print("========")
+            LOGGER.error("Got an error: %s:"", e.response['error'])
+
 
 if __name__ == "__main__":
-    #logger = logging.getLogger()
-    #logger.setLevel(logging.DEBUG)
-    #logger.addHandler(logging.StreamHandler())
+    LOGGER.addHandler(logging.StreamHandler())
+    LOGGER.setLevel(logging.INFO)
+
     ssl_context = ssl_lib.create_default_context(cafile=certifi.where())
 
     channelsIds = []
     #Channels id coming from command line
     if len(sys.argv) > 1:
-        print("Using IDs sent via command line")
+        LOGGER.info("Using IDs sent via command line")
         channelsIds = sys.argv[1:]
     else:
-        print("Using IDs from Slack API")
+        LOGGER.info("Using IDs from Slack API")
         channels_list = ChannelsList()
         channelsIds = channels_list.list_channels_to_be_archived(60)
 
-    print(len(channelsIds))
-    print(str(channelsIds))
+    LOGGER.info("Verifying %d channels", len(channelsIds))
+    LOGGER.info("Ids: %s", str(channelsIds))
 
     archive_channels(channelsIds)
