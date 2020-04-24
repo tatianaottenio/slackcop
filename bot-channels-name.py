@@ -9,7 +9,7 @@ import ssl as ssl_lib
 import certifi
 from channels_list import ChannelsList
 
-REGEX_PREFIX="^team-|^proj-|^bot-|^livup-|^local-|^temp-|^-help|^learn-|^off-|^outros-"
+REGEX_PREFIX="^team-|^proj-|^bot-|^livup-|^local-|^temp-|^help-|^learn-|^off-|^outros-"
 MESSAGE="Hey, channel! Preciso da ajuda de vocês para mantermos o Slack organizado.\nEsse canal está com o nome fora dos nossos padrões.\nÉ facinho arrumar! Não leva nem 2 minutos. Se você criou o canal, vá em `Detalhes > Mais > Renomear canal` e coloca um dos prefixos dessa lista: https://bit.ly/2XJgbY2\n\nSe estiver com dificuldades, é só chamar no #temp-slack-channels. Obrigado!"
 LOGGER = logging.getLogger()
 
