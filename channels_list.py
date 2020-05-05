@@ -38,23 +38,31 @@ class ChannelsList:
         return channels
 
     def list_channels_to_be_archived(self, inactive_days):
-        oldest = time.time() - inactive_days*24*60*60;
+        oldest = time.time() - inactive_days*24*60*60
         channels = self.list_channels()
+        #channels = [{"id":"C012LEEVBAT", "name":"ameno-tati"}]
         idsToArchive = []
         for c in channels:
+            if c["created"] > oldest:
+                print(c["id"], ",", c["name"], ", False")
+                continue
+
             response_hst = self.slack_web_client.conversations_history(
                 channel=c["id"],
                 oldest=str(oldest)
             )
             messages = response_hst["messages"]
-            
             valid_subtypes = ["bot_message", "message_replied", "thread_broadcast"]
 
             archive=True
             for m in messages:
+                if "bot_profile" in m and m["bot_profile"]["app_id"] == "A011U6B341Y":
+                    continue
+                
                 if "subtype" not in m or m["subtype"] in valid_subtypes:
                     archive=False
                     break
+                
 
             print(c["id"], ",", c["name"], ",", archive)
             if archive:
@@ -69,4 +77,4 @@ if __name__ == "__main__":
     ssl_context = ssl_lib.create_default_context(cafile=certifi.where())
 
     channelList = ChannelsList()
-    channelList.list_channels_to_be_archived(60)
+    print(channelList.list_channels_to_be_archived(60))

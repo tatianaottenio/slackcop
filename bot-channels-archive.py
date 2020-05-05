@@ -33,7 +33,7 @@ def archive_channels(channelsIds):
             # You will get a SlackApiError if "ok" is False
             assert e.response["ok"] is False
             assert e.response["error"]  # str like 'invalid_auth', 'channel_not_found'
-            LOGGER.error("Got an error: %s:"", e.response['error'])
+            LOGGER.error("Got an error: %s:", e.response['error'])
 
 
 if __name__ == "__main__":
